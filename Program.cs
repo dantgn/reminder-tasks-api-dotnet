@@ -8,7 +8,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
                       policy  =>
                       {
-                          policy.WithOrigins("http://localhost:5174")
+                          policy.WithOrigins("http://localhost:5173")
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                       });
@@ -42,5 +42,14 @@ app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/api/fillTodoItemsList", (TodoContext dbContext) => {
+    if (!dbContext.TodoItems.Any()){
+        var util = new Utility(dbContext);
+        util.FillTodosList();
+    }
+
+    return dbContext.TodoItems.ToListAsync();
+});
 
 app.Run();
